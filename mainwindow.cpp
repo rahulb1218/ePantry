@@ -9,9 +9,11 @@ QString todayString = today.toString(Qt::ISODate);
 QList<QDate> dates;
 QList<QString> entries = {};
 bool inserted = false;
+bool done = false;
 QString dateString;
 QString previousDate;
 QString ISOdateString;
+
 int row = 5;
 int index;
 
@@ -22,22 +24,100 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     add_button = new QPushButton("Add", this);
-    //add_button->setGeometry(QRect(QPoint(100,100), QSize(200,50)));
     ui->gridLayout->addWidget(add_button, 2, 3);
+    delete_button = new QPushButton("Delete", this);
+    ui->gridLayout->addWidget(delete_button, 3, 3);
     dates.append(QDate(3000, 01, 01));
     connect(add_button, &QPushButton::released, this, &MainWindow::handleButton);
+    connect(delete_button, &QPushButton::released, this, &MainWindow::deleteExpired);
 
-    QLabel *itemLabel1 = new QLabel();
-    QLabel *locationLabel1 = new QLabel();
-    QLabel *dateLabel1 = new QLabel();
-    itemLabel1->setText("yeehaw betch");
-    locationLabel1->setText("neeneer neener");
-    dateLabel1->setText("oh yesssssss");
-    ui->gridLayout->addWidget(itemLabel1, 4, 0);
-    ui->gridLayout->addWidget(locationLabel1, 4, 1);
-    ui->gridLayout->addWidget(dateLabel1, 4, 2);
+
 }
+void MainWindow::deleteExpired()
+{
 
+    int todayYear = (QString(todayString[0]) + QString(todayString[01]) + QString(todayString[2]) + QString(todayString[3])).toInt();
+    int todayMonth = (QString(todayString[5]) + QString(todayString[6])).toInt();
+    int todayDay = (QString(todayString[8]) + QString(todayString[9])).toInt();
+while (done != true){
+    for(int i = 0; i < entries.size(); i = i + 4){
+        //qDebug() << "running times: " << entries.size();
+        qDebug() << entries;
+        qDebug() << "run number: " << entries[i+3];
+        QString dateText = entries[i+3];
+        int year = (QString(dateText[0]) + QString(dateText[1]) + QString(dateText[2]) + QString(dateText[3])).toInt();
+        int month = (QString(dateText[5]) + QString(dateText[6])).toInt();
+        int day = (QString(dateText[8]) + QString(dateText[9])).toInt();
+        qDebug() << "checking: " << month << day << year;
+        if (todayYear > year){
+            for (int j = 0; j < 4; j++){
+                entries.removeAt(i);
+                break;
+            }
+        }
+        else if (todayYear == year && todayMonth > month){
+
+            for (int j = 0; j < 4; j++){
+                entries.removeAt(i);
+                break;
+            }
+        }
+        else if (todayYear == year && todayMonth == month && todayDay > day){
+
+            for (int j = 0; j < 4; j++){
+                entries.removeAt(i);
+                break;
+            }
+        }
+        else{
+            done = true;
+            break;
+        }
+
+}
+    qDebug() << entries;
+    /*for(int i = 0; i < entries.size(); i = i + 4){
+        //qDebug() << "running times: " << entries.size();
+
+        QLabel *itemLabel = new QLabel();
+        QLabel *locationLabel = new QLabel();
+        QLabel *dateLabel = new QLabel();
+
+        itemLabel->setText(entries[i]);
+        locationLabel->setText(entries[i+1]);
+        dateLabel->setText(entries[i+2]);
+
+        QString dateText = entries[i+3];
+
+        int year = (QString(dateText[0]) + QString(dateText[1]) + QString(dateText[2]) + QString(dateText[3])).toInt();
+        int month = (QString(dateText[5]) + QString(dateText[6])).toInt();
+        int day = (QString(dateText[8]) + QString(dateText[9])).toInt();
+
+        if (todayYear > year){
+
+            dateLabel->setStyleSheet("QLabel { background-color : red; color: white;}");
+            qDebug() << "expired 1";
+        }
+        else if (todayYear == year && todayMonth > month){
+
+            dateLabel->setStyleSheet("QLabel { background-color : red; color: white;}");
+            qDebug() << "expired 2";
+        }
+        else if (todayYear == year && todayMonth == month && todayDay > day){
+
+            dateLabel->setStyleSheet("QLabel { background-color : red; color: white;}");
+            qDebug() << "expired 3";
+        }
+
+        ui->gridLayout->addWidget(itemLabel, row, 0);
+        ui->gridLayout->addWidget(locationLabel, row, 1);
+        ui->gridLayout->addWidget(dateLabel, row, 2);
+        qDebug() << itemLabel->text() << locationLabel->text() << dateLabel->text();
+        qDebug() << "adding widget at row: " << row;
+        row = row + 1;
+    }*/
+}
+}
 void MainWindow::handleButton()
 {
     row = 4;

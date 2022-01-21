@@ -18,9 +18,11 @@ public:
 
 private slots:
     void handleButton();
+    void deleteExpired();
 
 private:
     Ui::MainWindow *ui;
     QPushButton *add_button;
+    QPushButton *delete_button;
 };
 #endif // MAINWINDOW_H
